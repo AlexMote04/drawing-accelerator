@@ -103,10 +103,13 @@ r1  <= y0;
 r2  <= x1;
 r3  <= y1;
 r6  <= colour;
-#1			// Try commenting-out this delay
-req <= 1'b1;		// Can you explain what happens?
-#`CLOCK_PERIOD		// Can you make it more robust (i.e. better)?
-req <= 1'b0;		// Remove request, thus acknowledge 'ack' (what ack?!?)
+
+// Assert request and wait for acknowledgement
+req <= 1'b1;
+while (ack == 0 ) @(posedge clk);
+
+// Once acknowledged, de-assert request
+req <= 1'b0;
 end 
 
 endtask
@@ -122,11 +125,31 @@ endtask
 // ON posedge clk, if criteria is true "|->" perform test
 // ##[n] delay test by n posedge clks, ##[a:b] declares a range
 
+// Input Protocol
+
 assertAckOnlyOneCycleLong: assert property (@(posedge clk) (ack == 1 |-> ##1 ack == 0))
-                      else $warning("Warning ack should only be one clock cycle long");
-		       
-assertReqNotRaisedWhilstBusy: assert property (@(posedge clk) (busy == 1 |->  not $rose(req))) 
-                      else $warning("Warning req raised while busy is active");
+                      else $warning("Warning ack should only be one clock cycle long.");
+
+assertBusyStartsWhenAckRises: assert property (@(posedge clk) $rose(ack) |-> busy)
+  else $warning("Busy should be asserted in the same cycle ack rises.");
+
+// Unit waits until request arrives
+assertAckOnlyTriggeredByReq: assert property (@(posedge clk) $rose(ack) |-> req)
+  else $warning("Ack should only be raised if req is high.");
+
+
+
+// Check busy is held for duration of the command?
+
+
+// Output Protocol
+
+// address, data etc. should not change while de_req is asserted
+
+// de_ack goes high for single active clock edge when outputs are accepted
+
+// de_req goes low after ack is seen
+
 
 endmodule
 
