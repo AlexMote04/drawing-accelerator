@@ -1,0 +1,4 @@
+clear 0
+line 40 40 40 40 0xCC
+dump
+quit

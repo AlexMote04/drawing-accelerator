@@ -1,0 +1,4 @@
+clear 0
+line 10 10 15 12 0x99
+dump
+quit

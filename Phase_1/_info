@@ -1,0 +1,69 @@
+m255
+K4
+z2
+!s12c _opt1
+Z0 !s99 nomlopt
+!s12c _opt
+R0
+!s11f vlog 2023.4 2023.10, Oct  9 2023
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z1 d/home/a93108am/Questa/COMP32211
+T_opt
+!s110 1759917429
+VM=i?Sz?VX>TeZeKbb`e>o0
+Z2 04 14 4 work unit_Testbench fast 0
+=1-000ae431a4f1-68e63574-57d39-350395
+R0
+Z3 !s12f OEM100
+Z4 !s12b OEM100
+Z5 !s124 OEM100
+o-quiet +acc -auto_acc_if_foreign -work Phase_1 -L unisims -L COMP32211 -L COMP32211_compiled -L Phase_1 -L Phase_2 -L Phase_3
+Z6 tCvgOpt 0
+n@_opt
+Z7 OL;O;2023.4;77
+R1
+T_opt1
+!s110 1760521294
+Vb<?K6GVdEkDiEHoi79=Xh2
+R2
+=1-000ae431a4f1-68ef6c4c-b18c2-b57a
+R0
+R3
+R4
+R5
+o-quiet +acc -auto_acc_if_foreign -work Phase_1 -L unisims -L COMP32211 -L COMP32211_compiled -L Phase_1 -L Phase_2 -L Phase_3 +acc
+R6
+n@_opt1
+R7
+vunit_Testbench
+2./src/Phase_1/unit_Testbench.sv
+DXx6 sv_std 3 std 0 22 9oUSJO;AeEaW`l:M@^WG92
+!s110 1759916266
+!i10b 1
+!s100 GXCe`V?CcTkOn4?;`nB792
+I_C<4Mm@WNDF?ffjZA^di13
+S1
+R1
+w1759915290
+8./src/Phase_1/unit_Testbench.sv
+F./src/Phase_1/unit_Testbench.sv
+!i122 0
+L0 15 117
+VDg1SIo80bB@j0V0VzS_@n1
+OL;L;2023.4;77
+r1
+!s85 0
+31
+!s108 1759916266.000000
+!s107 ./src/Phase_1/unit_Testbench.sv|
+!s90 -reportprogress|300|-lint|-cover|bcsxf|./src/Phase_1/unit_Testbench.sv|
+!s101 -O0
+!i113 0
+!s102 -cover bcsxf
+o-O0 -lint -cover bcsxf
+tShow_source 1 Hazard 1 DisableOpt 1 Coverage 95 CoverExcludeDefault 1 CoverOpt 1 CvgOpt 0
+nunit_@testbench

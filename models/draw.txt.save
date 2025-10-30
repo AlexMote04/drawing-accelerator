@@ -1,0 +1,66 @@
+sleep 1
+clear
+sleep 1
+mandelbrot -2.4 -1.4 0.006 256
+sleep 1
+mandelbrot -1.3 -0.4 0.0003 1024
+sleep 1
+line 0.9 0 639 479 255
+point 100 100 3
+point 101 100 3
+point 100 101 3
+point 101 101 3
+sleep 1
+circle 500 120 100 28
+character  8  0  72 255
+character 16  0 101 255
+character 24  0 108 255
+character 32  0 108 255
+character 40  0 111 255
+sleep 5
+rectangle 120 65 560 470 0xFFE1
+sleep 5
+clear
+point 320 0 3
+automaton 3
+sleep 5
+dither   0 0  36  99 0xA00000
+sleep 1
+dither  37 0  73  99 0xA20000
+sleep 1
+dither  74 0 110  99 0xA40000
+sleep 1
+dither 111 0 147  99 0xA60000
+sleep 1
+dither 148 0 184  99 0xA80000
+sleep 1
+dither 185 0 221  99 0xAA0000
+sleep 1
+dither 222 0 258  99 0xAC0000
+sleep 1
+dither 259 0 295  99 0xAE0000
+sleep 1
+dither 296 0 332  99 0xB00000
+sleep 1
+dither 333 0 369  99 0xB20000
+sleep 1
+dither 370 0 406  99 0xB40000
+sleep 1
+dither 407 0 443  99 0xB60000
+sleep 1
+dither 444 0 480  99 0xB80000
+sleep 1
+dither 481 0 517  99 0xBA0000
+sleep 1
+dither 518 0 554  99 0xBC0000
+sleep 1
+dither 555 0 591  99 0xBE0000
+sleep 1
+dither 592 0 629  99 0xC00000
+sleep 1
+dither   0 100 314 199 0xA00000
+dither 315 100 629 199 0xC00000
+sleep 5
+quit
+
+clear
