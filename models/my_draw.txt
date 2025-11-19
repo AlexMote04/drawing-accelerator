@@ -1,27 +1,12 @@
-# Test 1: Simple Line (10,10) -> (15,12), Color 0x99
 clear 0
 line 10 10 15 12 0x99
 dump
-
-# Test 2: Horizontal Line (20,20) -> (25,20), Color 0xAA
-clear 0
 line 20 20 25 20 0xAA
 dump
-
-# Test 3: Vertical Line (30,30) -> (30,35), Color 0xBB
-clear 0
 line 30 30 30 35 0xBB
 dump
-
-# Test 4: Single Pixel Line (40,40) -> (40,40), Color 0xCC
-clear 0
 line 40 40 40 40 0xCC
 dump
-
-# Test 5: Re-trigger Bug Test (10,10) -> (10,10), Color 0xDD
-clear 0
 line 10 10 10 10 0xDD
 dump
-
-# End the program
 quit

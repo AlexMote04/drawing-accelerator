@@ -1,4 +1,0 @@
-clear 0
-line 10 10 10 10 0xDD
-dump
-quit
