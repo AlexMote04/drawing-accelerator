@@ -17,17 +17,10 @@ def run_test(test_name):
     print(f"--- Running Test: {test_name} ---")
 
     # 1. Generate Golden Data using the C++ Controller
-    print(f"  [1/2] Generating golden data...")
-
-    # Clean up any stale dump file
-    if os.path.exists(DEFAULT_DUMP_FILE):
-        try:
-            os.remove(DEFAULT_DUMP_FILE)
-        except OSError as e:
-            print(f"  Warning: Could not remove stale {DEFAULT_DUMP_FILE}: {e}")
+    print("  [1/2] Generating golden data...")
 
     try:
-        with open(command_file, 'r') as infile:
+        with open(command_file, 'r', encoding='utf-8') as infile:
             # Run controller. Suppress stdout.
             subprocess.run(CONTROLLER_EXE, stdin=infile, stdout=subprocess.DEVNULL, check=True)
 
@@ -42,8 +35,8 @@ def run_test(test_name):
         print("  Error: C++ Controller failed (non-zero exit code).")
         return False
     except FileNotFoundError:
-         print(f"  Error: Input file {command_file} not found.")
-         return False
+        print(f"  Error: Input file {command_file} not found.")
+        return False
 
     # 2. Run Verilog Simulation
     print("  [2/2] Running Verilog Simulation...")
@@ -60,11 +53,11 @@ def run_test(test_name):
         if "TEST PASSED" in result.stdout:
             print("  RESULT: PASS ✅")
             return True
-        else:
-            print("  RESULT: FAIL ❌")
-            print("  --- Sim Output Snippet ---")
-            print(result.stdout[-500:]) # Show a bit more error context
-            return False
+
+        print("  RESULT: FAIL ❌")
+        print("  --- Sim Output Snippet ---")
+        print(result.stdout[-500:]) # Show a bit more error context
+        return False
 
     except Exception as e:
         print(f"  Error running simulation: {e}")

@@ -97,6 +97,13 @@ end
 // -----------------------------------------------------------------------------
 
 // TASK: Load Golden Data from File (from C++ Model)
+// Current Golden data has lines like: "010 010 153"
+// Ideal Verilog DUT expects input like "18'addr, 4'nbyte, 32'temp_data"
+// pixel_byte_address = (x + y*640)
+// pixel_word_address = pixel_byte_address / 4
+// pixel_byte_lane = pixel_byte_address % 4
+// temp_nbyte = ~(1 << pixel_byte_lane) // Active low
+// temp data should be calculated by converting the decimal value to binary, and then shifting to the appropriate byte lane
 task load_golden_data(string file_path);
   integer file_handle, status, x_coord, y_coord, temp_addr, temp_nbyte, temp_data;
   pixel_t temp_pixel;
@@ -113,10 +120,6 @@ task load_golden_data(string file_path);
   while (!$feof(file_handle)) begin
     status = $fscanf(file_handle, "%d %d %d\n", x_coord, y_coord, temp_data);
     if (status == 3) begin
-      // pixel_byte_address = (x + y*160)
-      // pixel_word_address = pixel_byte_address / 4
-      // pixel_byte_lane = pixel_byte_address % 4
-      // temp_nbyte = ~(1 << pixel_byte_lane) // Active low
       temp_pixel.addr  = 18'(temp_addr);
       temp_pixel.nbyte = 4'(temp_nbyte);
       temp_pixel.data  = 32'(temp_data);
@@ -127,7 +130,13 @@ task load_golden_data(string file_path);
 endtask
 
 // TASK: Read Command File and Drive DUT
-// Parses lines like: "line 10 10 20 20 0x99"
+// Current lines like: "line 10 10 20 20 0x99"
+// Ideal lines like: "line "18'addr, 4'nbyte, 32'temp_data""
+// pixel_byte_address = (x + y*640)
+// pixel_word_address = pixel_byte_address / 4
+// pixel_byte_lane = pixel_byte_address % 4
+// temp_nbyte = ~(1 << pixel_byte_lane) // Active low
+// temp data should be calculated by converting the decimal value to binary, and then shifting to the appropriate byte lane
 task execute_input_file(string file_path);
   integer file_handle, status;
   string cmd_type;
