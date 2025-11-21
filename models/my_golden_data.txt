@@ -1,3 +1,0 @@
-commandInt: new command line: clear 0
-commandInt: new command line: line 10 10 15 12 0x99
-commandInt: new command line: quit

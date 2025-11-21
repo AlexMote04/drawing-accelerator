@@ -1,4 +1,0 @@
-clear
-line 30 30 30 35 0xBB
-dump
-quit

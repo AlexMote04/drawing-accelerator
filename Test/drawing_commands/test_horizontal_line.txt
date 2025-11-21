@@ -1,4 +1,0 @@
-clear
-line 20 20 25 20 0xAA
-dump
-quit

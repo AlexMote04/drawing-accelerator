@@ -1,4 +1,0 @@
-clear
-line 40 40 40 40 0xCC
-dump
-quit
