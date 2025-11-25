@@ -16,7 +16,7 @@ module unit_Testbench ();
 
   // -- Signals --
   reg          clk;
-  reg          rst_n; // Added reset signal just in case
+  reg          rst_n;
   
   // Command Interface
   reg          req;
@@ -30,6 +30,7 @@ module unit_Testbench ();
   wire [17:0]  de_addr;
   wire  [3:0]  de_nbyte;
   wire [31:0]  de_data;
+  bit state = 0;
 
   // -- Data Structures --
   typedef struct {
@@ -45,16 +46,30 @@ module unit_Testbench ();
   generate
     case (UNIT_ID)
       1: unit_1 u_dut (
-           .clk(clk), .reset(rst_n), .req(req), .ack(ack), .busy(busy), 
+           .clk(clk), .req(req), .ack(ack), .busy(busy), 
            .r0(r0), .r1(r1), .r2(r2), .r3(r3), .r4(r4), .r5(r5), .r6(r6), .r7(r7),
            .de_req(de_req), .de_ack(de_ack), .de_addr(de_addr), .de_nbyte(de_nbyte), .de_data(de_data)
          );
       2: unit_2 u_dut (
-           .clk(clk), .reset(rst_n), .req(req), .ack(ack), .busy(busy), 
+           .clk(clk), .req(req), .ack(ack), .busy(busy), 
            .r0(r0), .r1(r1), .r2(r2), .r3(r3), .r4(r4), .r5(r5), .r6(r6), .r7(r7),
            .de_req(de_req), .de_ack(de_ack), .de_addr(de_addr), .de_nbyte(de_nbyte), .de_data(de_data)
          );
-      // Add other units here...
+      3: unit_3 u_dut (
+           .clk(clk), .req(req), .ack(ack), .busy(busy), 
+           .r0(r0), .r1(r1), .r2(r2), .r3(r3), .r4(r4), .r5(r5), .r6(r6), .r7(r7),
+           .de_req(de_req), .de_ack(de_ack), .de_addr(de_addr), .de_nbyte(de_nbyte), .de_data(de_data)
+         );
+      4: unit_4 u_dut (
+           .clk(clk), .req(req), .ack(ack), .busy(busy), 
+           .r0(r0), .r1(r1), .r2(r2), .r3(r3), .r4(r4), .r5(r5), .r6(r6), .r7(r7),
+           .de_req(de_req), .de_ack(de_ack), .de_addr(de_addr), .de_nbyte(de_nbyte), .de_data(de_data)
+         );
+      5: unit_5 u_dut (
+           .clk(clk), .req(req), .ack(ack), .busy(busy), 
+           .r0(r0), .r1(r1), .r2(r2), .r3(r3), .r4(r4), .r5(r5), .r6(r6), .r7(r7),
+           .de_req(de_req), .de_ack(de_ack), .de_addr(de_addr), .de_nbyte(de_nbyte), .de_data(de_data)
+         );
       default: initial $error("Invalid UNIT_ID selected");
     endcase
   endgenerate
@@ -156,28 +171,43 @@ module unit_Testbench ();
     @(posedge clk);
     r0 <= x0; r1 <= y0; r2 <= x1; r3 <= y1; r6 <= col;
     req <= 1;
-    @(posedge clk);
     while (!ack) @(posedge clk);
     req <= 0;
   endtask
 
   task check_results();
-    bit fail = 0;
+    bit fail;
     int count;
+    pixel_t g;
+    pixel_t d;
+    int i;
+
+    fail = 0;
     
     count = (golden_queue.size() > dut_queue.size()) ? golden_queue.size() : dut_queue.size();
     
     $display("---------------------------------------------------");
     $display("Checking %0d pixels...", count);
 
-    for (int i=0; i<count; i++) begin
-      pixel_t g = (i < golden_queue.size()) ? golden_queue[i] : '{default:0};
-      pixel_t d = (i < dut_queue.size())    ? dut_queue[i]    : '{default:0};
+    for (i=0; i<count; i++) begin
+      // Create a mask based on active-low byte enables
+      bit [31:0] data_mask;
 
-      if (g.addr !== d.addr || g.data !== d.data || g.nbyte !== d.nbyte) begin
+      g = (i < golden_queue.size()) ? golden_queue[i] : '{default:0};
+      d = (i < dut_queue.size())    ? dut_queue[i]    : '{default:0};
+
+      data_mask[31:24] = (g.nbyte[3] == 0) ? 8'hFF : 8'h00;
+      data_mask[23:16] = (g.nbyte[2] == 0) ? 8'hFF : 8'h00;
+      data_mask[15:8]  = (g.nbyte[1] == 0) ? 8'hFF : 8'h00;
+      data_mask[7:0]   = (g.nbyte[0] == 0) ? 8'hFF : 8'h00;
+
+      if (g.addr !== d.addr || g.nbyte !== d.nbyte || 
+         (g.data & data_mask) !== (d.data & data_mask)) begin
+         
         $display("[FAIL] Mismatch at #%0d", i);
-        $display("       EXP: Addr:%h nByte:%b Data:%h", g.addr, g.nbyte, g.data);
-        $display("       GOT: Addr:%h nByte:%b Data:%h", d.addr, d.nbyte, d.data);
+        $display("       EXP: Addr:%h nByte:%b Data (Masked):%h", g.addr, g.nbyte, (g.data & data_mask));
+        
+        $display("       GOT: Addr:%h nByte:%b Data (Raw)   :%h", d.addr, d.nbyte, d.data);
         fail = 1;
       end
     end
@@ -216,7 +246,7 @@ module unit_Testbench ();
 
   // Capture DUT Output
   always @(posedge clk) begin
-    if (de_req && de_ack) begin
+    if (de_ack) begin
       dut_queue.push_back('{de_addr, de_nbyte, de_data});
     end
   end
