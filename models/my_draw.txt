@@ -1,0 +1,5 @@
+sleep 1
+clear
+circle 500 120 100 28
+sleep 5
+quit

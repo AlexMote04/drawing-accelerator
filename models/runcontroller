@@ -7,4 +7,4 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 export PATH=$PATH:/cadtools5/vscreen/bin
 
 # Run the controller using draw.txt
-$SCRIPT_DIR/controller < $SCRIPT_DIR/draw.txt
+$SCRIPT_DIR/controller < $SCRIPT_DIR/my_draw.txt
