@@ -11,9 +11,10 @@
 ---------------------------------------------------------- */
 #include <line.h>
 #include <stdio.h>
+#include <fstream>
 
 
-void LineModule::drawLine(int x0, int y0, int x1, int y1, uint8_t colour, FrameStore& fs) {
+void LineModule::drawLine(int x0, int y0, int x1, int y1, uint8_t colour, FrameStore& fs, std::ofstream &outfile) {
     /* This is an implementation of Bresenham's line drawing algorithm */
     unsigned int address;
     int dx, dy, adx, ady;
@@ -22,7 +23,7 @@ void LineModule::drawLine(int x0, int y0, int x1, int y1, uint8_t colour, FrameS
 
     /* write the first point */
     address = x0 + PIXELS*y0;
-    fs.write(address, colour);
+    fs.write(address, colour); outfile << (address) << " " << (int)colour << std::endl;
 
     /* compute the pixels along the line */
     dx = x1 - x0;
@@ -65,7 +66,7 @@ void LineModule::drawLine(int x0, int y0, int x1, int y1, uint8_t colour, FrameS
             address = address + a2; e = e + 2*p;
         }
         c--;
-        fs.write(address, colour);
+        fs.write(address, colour); outfile << (address) << " " << (int)colour << std::endl;
     }
 }
 

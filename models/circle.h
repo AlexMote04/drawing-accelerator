@@ -12,12 +12,14 @@
 #ifndef CIRCLE_INC
 #define CIRCLE_INC
 
+#include <fstream>
+
 #include "params.h"
 #include "frameStore.h"
 
 class CircleModule {
     public:
-        void drawCircle(int x0, int y0, int r, uint8_t colour, FrameStore& fs);
+        void drawCircle(int x0, int y0, int r, uint8_t colour, FrameStore& fs, std::ofstream &outfile);
 };
 
 #endif

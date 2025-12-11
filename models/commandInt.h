@@ -29,15 +29,8 @@ enum CommandType {
     Dump,          /* dump screen contents to file */
     Quit,          /* finish execution             */
     Sleep,         /* sleep for given time (in s)  */
-    Point,         /* drawing Point function 	   */
     Line,          /* drawing Line function 	   */
     Circle,
-    Character,
-    Rectangle,
-    Mandelbrot,
-    Automaton,
-    Dither,
-    Sobel,
     Unknown        /* unknown command              */
 };
 

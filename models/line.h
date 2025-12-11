@@ -12,12 +12,14 @@
 #ifndef LINE_INC
 #define LINE_INC
 
+#include <fstream>
+
 #include "params.h"
 #include "frameStore.h"
 
 class LineModule {
     public:
-        void drawLine(int x0, int y0, int x1, int y1, uint8_t colour, FrameStore& fs);
+        void drawLine(int x0, int y0, int x1, int y1, uint8_t colour, FrameStore& fs, std::ofstream &outfile);
 };
 
 #endif

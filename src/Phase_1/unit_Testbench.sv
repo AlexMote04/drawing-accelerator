@@ -111,7 +111,7 @@ module unit_Testbench ();
 
     // 3. Verify
     check_results();
-    $finish;
+    $stop;
   end
 
   // -----------------------------------------------------------------------------
@@ -143,33 +143,55 @@ module unit_Testbench ();
     integer fd, code;
     string cmd;
     integer x0, y0, x1, y1, col;
+    integer rad;
     string dummy;
 
     fd = $fopen(file_path, "r");
     if (!fd) begin $error("Cannot open command file: %s", file_path); $finish; end
 
-    while (!$feof(fd)) begin
+  while (!$feof(fd)) begin
       code = $fscanf(fd, "%s", cmd);
-      if (code == 1 && cmd == "line") begin
-        code = $fscanf(fd, "%d %d %d %d %h", x0, y0, x1, y1, col);
-        if (code == 5) begin
-          drive_dut(x0, y0, x1, y1, col);
-          // Wait until operation completes
-          while (busy) @(posedge clk);
-          repeat(5) @(posedge clk); // Margin
+
+      if (code == 1) begin
+        if (cmd == "line") begin
+            code = $fscanf(fd, "%d %d %d %d %h", x0, y0, x1, y1, col);
+            if (code == 5) begin
+                drive_line(x0, y0, x1, y1, col);
+                while (busy) @(posedge clk);
+                repeat(5) @(posedge clk);
+            end
+        end 
+        else if (cmd == "circle") begin
+            code = $fscanf(fd, "%d %d %d %h", x0, y0, rad, col); 
+            if (code == 4) begin
+                // You need a new task or modify drive_dut to handle circles
+                drive_circle(x0, y0, rad, col); 
+                while (busy) @(posedge clk);
+                repeat(5) @(posedge clk);
+            end
+        end 
+        else begin
+            // Consume line if not matched
+            void'($fgets(dummy, fd));
         end
-      end else begin
-        // Consume line if not matched
-        void'($fgets(dummy, fd));
       end
     end
     $fclose(fd);
   endtask
 
-  task drive_dut(input int x0, y0, x1, y1, col);
+  task drive_line(input int x0, y0, x1, y1, col);
     $display("[TB] Driving Line: %0d,%0d -> %0d,%0d (Color %h)", x0, y0, x1, y1, col);
     @(posedge clk);
     r0 <= x0; r1 <= y0; r2 <= x1; r3 <= y1; r6 <= col;
+    req <= 1;
+    while (!ack) @(posedge clk);
+    req <= 0;
+  endtask
+
+  task drive_circle(input int x0, y0, rad, col);
+    $display("[TB] Driving Circle: %0d,%0d, (Radius %0d) (Color %h)", x0, y0, rad, col);
+    @(posedge clk);
+    r0 <= x0; r1 <= y0; r4 <= rad; r6 <= col;
     req <= 1;
     while (!ack) @(posedge clk);
     req <= 0;

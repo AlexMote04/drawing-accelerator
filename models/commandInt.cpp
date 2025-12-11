@@ -45,15 +45,6 @@ Command CommandInt::readCmd() {
         cmd.type = Unknown;
         cerr << "commandInt: WARNING - ignoring empty command line." << endl;
     }
-    else if (!strcmp(command, "point")){
-       if (paramCnt >= 3)
-        cmd.type = Point;
-       else {
-        cmd.type = Unknown;
-        cerr << "commandInt: WARNING - ignoring 'point' command with < 3 parameters." << endl;
-       }
-    }
-
     else if (!strcmp(command, "line")){
        if (paramCnt >= 5)
         cmd.type = Line;
@@ -68,48 +59,6 @@ Command CommandInt::readCmd() {
        else {
         cmd.type = Unknown;
         cerr << "commandInt: WARNING - ignoring 'circle' command with < 4 parameters." << endl;
-       }
-    }
-    else if (!strcmp(command, "character")){
-       if (paramCnt >= 4)
-        cmd.type = Character;
-       else {
-        cmd.type = Unknown;
-        cerr << "commandInt: WARNING - ignoring 'character' command with < 4 parameters." << endl;
-       }
-    }
-    else if (!strcmp(command, "rectangle")){
-       if (paramCnt >= 5)
-        cmd.type = Rectangle;
-       else {
-        cmd.type = Unknown;
-        cerr << "commandInt: WARNING - ignoring 'rectangle' command with < 5 parameters." << endl;
-       }
-    }
-
-    else if (!strcmp(command, "mandelbrot")){
-       if (paramCnt >= 4)
-        cmd.type = Mandelbrot;
-       else {
-        cmd.type = Unknown;
-        cerr << "commandInt: WARNING - ignoring 'mandelbrot' command with < 4 parameters." << endl;
-       }
-    }
-
-    else if (!strcmp(command, "automaton")){
-       if (paramCnt >= 1)
-        cmd.type = Automaton;
-       else {
-        cmd.type = Unknown;
-        cerr << "commandInt: WARNING - ignoring 'automaton' command with < 1 parameters." << endl;
-       }
-    }
-    else if (!strcmp(command, "dither")){
-       if (paramCnt >= 5)
-        cmd.type = Dither;
-       else {
-        cmd.type = Unknown;
-        cerr << "commandInt: WARNING - ignoring 'dither' command with < 5 parameters." << endl;
        }
     }
     else if (!strcmp(command, "clear")){

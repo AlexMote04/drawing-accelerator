@@ -1,1 +1,0 @@
-automaton_fstore.cpp
