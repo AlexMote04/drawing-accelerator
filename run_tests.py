@@ -11,7 +11,9 @@ os.environ["SALT_LICENSE_SERVER"] = "1718@cadmaster.cs.man.ac.uk"
 
 VERILOG_SIM_EXE = "/cadtools5/questasim/QUESTA-CORE-PRIME_2023.4/questasim/bin/vsim"
 # The standard GUI command flags
-SIM_ARGS = ["-64", "-gui", "-voptargs=+acc", "-gUNIT_ID=3", "-L", "GLIB", "-do", "do wave.do; run -all"]
+SIM_ARGS = [
+    "-64", "-gui", "-voptargs=+acc", "-gUNIT_ID=3", "-L", "GLIB", "-do", "do wave.do; run -all"
+]
 
 FS_WIDTH = 640
 FS_HEIGHT = 480

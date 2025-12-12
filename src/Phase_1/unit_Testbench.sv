@@ -180,7 +180,7 @@ module unit_Testbench ();
   endtask
 
   task drive_line(input int x0, y0, x1, y1, col);
-    $display("[TB] Driving Line: %0d,%0d -> %0d,%0d (Color %h)", x0, y0, x1, y1, col);
+    $display("[TB] Driving Line: %0d,%0d -> %0d,%0d (Colour %h)", x0, y0, x1, y1, col);
     @(posedge clk);
     r0 <= x0; r1 <= y0; r2 <= x1; r3 <= y1; r6 <= col;
     req <= 1;
@@ -189,7 +189,7 @@ module unit_Testbench ();
   endtask
 
   task drive_circle(input int x0, y0, rad, col);
-    $display("[TB] Driving Circle: %0d,%0d, (Radius %0d) (Color %h)", x0, y0, rad, col);
+    $display("[TB] Driving Circle: %0d,%0d, (Radius %0d) (Colour %h)", x0, y0, rad, col);
     @(posedge clk);
     r0 <= x0; r1 <= y0; r4 <= rad; r6 <= col;
     req <= 1;

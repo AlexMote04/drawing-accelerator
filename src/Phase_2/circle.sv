@@ -1,8 +1,7 @@
 /******************************************************************************/
 /*                                                                            */
 /*  Module:   circle                                                          */
-/*  Modified: August 2025                                                     */
-/*  Author(s):  A Mote                                                        */
+/*  Author:  A Mote                                                        */
 /*                                                                            */
 /*  Description:                                                              */
 /*  This unit draws a circle from centred at x (R0), y (R1) with radius (R4)  */
