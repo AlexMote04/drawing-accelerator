@@ -4,20 +4,19 @@ import sys
 
 # --- Configuration ---
 CONTROLLER_EXE = "./models/controller"
-
 PIXELS_PATH = "pixels.txt"
-
 os.environ["SALT_LICENSE_SERVER"] = "1718@cadmaster.cs.man.ac.uk"
-
 VERILOG_SIM_EXE = "/cadtools5/questasim/QUESTA-CORE-PRIME_2023.4/questasim/bin/vsim"
-# The standard GUI command flags
 SIM_ARGS = [
     "-64", "-gui", "-voptargs=+acc", "-gUNIT_ID=3", "-L", "GLIB", "-do", "do wave.do; run -all"
 ]
 
+# Display Resolution
 FS_WIDTH = 640
 FS_HEIGHT = 480
 
+# --- Test Cases ---
+# Format: ("test_name", "command args")
 LINE_TESTS = [
     ("test_simple_line",     "line 10 10 15 12 0x99"),
     ("test_horizontal_line", "line 20 20 25 20 0xAA"),
@@ -27,7 +26,15 @@ LINE_TESTS = [
 ]
 
 CIRCLE_TESTS = [
-    ("test_simple_circle", "circle 500 120 100 0x99")
+    ("test_center_standard", "circle 320 240 100 0xFF"),
+    ("test_radius_small",    "circle 100 100 2 0xAA"),
+    ("test_radius_large",    "circle 320 240 230 0xBB"),
+    ("test_clip_top",        "circle 320 10 20 0xCC"),
+    ("test_clip_left",       "circle 10 240 20 0xDD"),
+    ("test_clip_right",      "circle 630 240 20 0xEE"),
+    ("test_clip_bottom",     "circle 320 470 20 0x99"),
+    ("test_clip_corner",     "circle 0 0 50 0x88"),
+    ("test_fully_offscreen", "circle 800 600 50 0x77"),
 ]
 
 def run_commands_cpp(commands):
