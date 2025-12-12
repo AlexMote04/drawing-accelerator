@@ -4,7 +4,7 @@ delete wave *
 # 2. Add Global Signals
 add wave -noupdate -divider "Global"
 add wave -noupdate -color white /unit_Testbench/clk
-add wave -noupdate -color yellow /unit_Testbench/rst_n
+add wave -noupdate -color yellow /unit_Testbench/rst
 
 # 3. Add Input Commands
 add wave -noupdate -divider "Command Inputs"

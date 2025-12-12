@@ -1,5 +1,5 @@
 sleep 1
 clear
-circle 500 120 100 100
+circle 320 10 20 0xCC
 dump
 quit

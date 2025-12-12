@@ -7,13 +7,15 @@ CONTROLLER_EXE = "./models/controller"
 PIXELS_PATH = "pixels.txt"
 os.environ["SALT_LICENSE_SERVER"] = "1718@cadmaster.cs.man.ac.uk"
 VERILOG_SIM_EXE = "/cadtools5/questasim/QUESTA-CORE-PRIME_2023.4/questasim/bin/vsim"
-SIM_ARGS = [
-    "-64", "-gui", "-voptargs=+acc", "-gUNIT_ID=3", "-L", "GLIB", "-do", "do wave.do; run -all"
-]
 
 # Display Resolution
 FS_WIDTH = 640
 FS_HEIGHT = 480
+
+UNIT_ID = 6 # Circle has unit id 6
+SIM_ARGS = [
+    "-64", "-gui", "-voptargs=+acc", f"-gUNIT_ID={UNIT_ID}", "-L", "GLIB", "-do", "do wave.do; run -all"
+]
 
 # --- Test Cases ---
 # Format: ("test_name", "command args")
@@ -27,6 +29,8 @@ LINE_TESTS = [
 
 CIRCLE_TESTS = [
     ("test_center_standard", "circle 320 240 100 0xFF"),
+    ("test_center_odd", "circle 321 241 100 0x8"),
+    ("test_center_odd_radius", "circle 320 240 101 0x80"),
     ("test_radius_small",    "circle 100 100 2 0xAA"),
     ("test_radius_large",    "circle 320 240 230 0xBB"),
     ("test_clip_top",        "circle 320 10 20 0xCC"),
@@ -112,4 +116,4 @@ def run_tests(tests):
     run_simulation("Running All Tests", commands, golden_pixels_sv)
 
 if __name__ == "__main__":
-    run_tests(LINE_TESTS)
+    run_tests(CIRCLE_TESTS)

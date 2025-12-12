@@ -12,11 +12,12 @@ module unit_Testbench ();
 
   // -- Configuration Parameters --
   // Can be overridden via command line: vsim ... -gUNIT_ID=2
-  parameter UNIT_ID = 1; 
+
+  parameter UNIT_ID = 6;
 
   // -- Signals --
   reg          clk;
-  reg          rst_n;
+  reg          rst;
   
   // Command Interface
   reg          req;
@@ -70,12 +71,17 @@ module unit_Testbench ();
            .r0(r0), .r1(r1), .r2(r2), .r3(r3), .r4(r4), .r5(r5), .r6(r6), .r7(r7),
            .de_req(de_req), .de_ack(de_ack), .de_addr(de_addr), .de_nbyte(de_nbyte), .de_data(de_data)
          );
+      6: circle u_dut (
+           .clk(clk), .req(req), .ack(ack), .busy(busy), .reset(rst),
+           .r0(r0), .r1(r1), .r2(r2), .r3(r3), .r4(r4), .r5(r5), .r6(r6), .r7(r7),
+           .de_req(de_req), .de_ack(de_ack), .de_addr(de_addr), .de_nbyte(de_nbyte), .de_w_data(de_data)
+         );
       default: initial $error("Invalid UNIT_ID selected");
     endcase
   endgenerate
 
   // -- Clock & Timeout --
-  initial clk = 0;
+  initial clk = 1;
   always #(`CLOCK_PERIOD/2) clk = ~clk;
 
   initial begin
@@ -93,9 +99,9 @@ module unit_Testbench ();
     
     // Initial Cleanup
     req   = 0;
-    rst_n = 0;
+    rst = 1;
     repeat (5) @(posedge clk);
-    rst_n = 1;
+    rst = 0;
     
     // 1. Get Arguments
     if (!$value$plusargs("golden_file=%s", golden_file_path)) begin
@@ -111,6 +117,9 @@ module unit_Testbench ();
 
     // 3. Verify
     check_results();
+
+    // 4. Check if system correctly resets during drawing
+    verify_reset_mid_operation();
     $stop;
   end
 
@@ -119,16 +128,20 @@ module unit_Testbench ();
   // -----------------------------------------------------------------------------
 
   task load_golden_data(string file_path);
+    // Loads the the golden (c++) pixel values from a text file into the golden_queue
     integer fd, code, t_addr, t_nbyte, t_data;
+    // 'p' is a temporary struct instance used to push data into the queue
     pixel_t p;
     
     fd = $fopen(file_path, "r");
     if (!fd) begin $error("Cannot open golden file: %s", file_path); $finish; end
 
-    golden_queue.delete();
+    golden_queue.delete(); // Ensure queue is empty before starting
     while (!$feof(fd)) begin
       // Expect format: Address nByte Data
       code = $fscanf(fd, "%d %d %d", t_addr, t_nbyte, t_data);
+      // Only processes lines if we successfully read 3 times
+      // This prevents trying to read empty lines
       if (code == 3) begin
         p.addr  = 18'(t_addr);
         p.nbyte = 4'(t_nbyte);
@@ -232,7 +245,7 @@ module unit_Testbench ();
         $display("       GOT: Addr:%h nByte:%b Data (Raw)   :%h", d.addr, d.nbyte, d.data);
         fail = 1;
       end
-    end
+    end 
 
     if (!fail && count > 0) $display("TEST PASSED");
     else $display("TEST FAILED");
@@ -244,13 +257,12 @@ module unit_Testbench ();
   // -----------------------------------------------------------------------------
   
   // This simulates memory wait states. 
-  // The real hardware takes at 2 cycles for a write.
+  // The real hardware takes at least 2 cycles for a write.
   always @(posedge clk) begin
-    de_ack <= 1'b0;
-    
     case (state)
       0: begin
-        if (de_req) begin
+        de_ack <= 1'b0;
+        if (de_req & !de_ack) begin
            // Wait here randomly, then move to ACK state
            if ($urandom_range(3) == 0) begin
                // Do NOT ack here yet
@@ -263,6 +275,7 @@ module unit_Testbench ();
         de_ack <= 1'b1;
         state <= 0;
       end
+      default: state <= 0;
     endcase
   end
 
@@ -273,6 +286,102 @@ module unit_Testbench ();
     end
   end
 
+// -----------------------------------------------------------------------------
+// RESET ROBUSTNESS TEST
+// -----------------------------------------------------------------------------
+task verify_reset_mid_operation();
+    $display("\n---------------------------------------------------");
+    $display("Running Reset Robustness Tests (INIT, PLOT, CALC)");
+    $display("---------------------------------------------------");
+
+    // -----------------------------------------------------------
+    // TEST 1: Reset during INIT (Setup Phase)
+    // -----------------------------------------------------------
+    $display("[TB] Test 1: Reset from INIT -> IDLE");
+    dut_queue.delete(); // Clean slate
+    
+    // Setup inputs
+    r0 <= 320; r1 <= 240; r4 <= 200; r6 <= 32'hFFFFFFFF;
+    
+    @(posedge clk);
+    req <= 1;
+
+    // Wait exactly 1 cycle. DUT moves IDLE -> INIT.
+    // We assert reset *while* it is trying to latch inputs.
+    @(posedge clk);
+    $display("     State should be INIT. Asserting Reset...");
+    rst <= 1;
+    req <= 0;
+
+    @(posedge clk); // Reset takes effect
+    rst <= 0;
+    
+    @(posedge clk);
+    if (busy == 0) $display("     [PASS] INIT reset successful.");
+    else           $display("     [FAIL] Stuck busy after INIT reset.");
+
+    // -----------------------------------------------------------
+    // TEST 2: Reset during PLOT (Memory Request Phase)
+    // -----------------------------------------------------------
+    $display("\n[TB] Test 2: Reset from PLOT -> IDLE");
+    repeat(5) @(posedge clk); // Recover
+    
+    req <= 1;
+    wait(busy);
+    @(posedge clk);
+    req <= 0;
+
+    // Wait for the FIRST memory request.
+    // de_req only goes high when the DUT is in the PLOT state.
+    wait(de_req == 1);
+    
+    $display("     de_req detected (State = PLOT). Asserting Reset...");
+    rst <= 1;
+    
+    @(posedge clk); // Hold reset
+    @(posedge clk);
+    rst <= 0;
+    
+    repeat(2) @(posedge clk);
+    if (busy == 0 && de_req == 0) $display("     [PASS] PLOT reset successful.");
+    else                          $display("     [FAIL] Stuck busy/req after PLOT reset.");
+
+    // -----------------------------------------------------------
+    // TEST 3: Reset during CALC (Math Update Phase)
+    // -----------------------------------------------------------
+    $display("\n[TB] Test 3: Reset from CALC -> IDLE");
+    repeat(5) @(posedge clk); // Recover
+    
+    req <= 1;
+    wait(busy);
+    @(posedge clk);
+    req <= 0;
+
+    // Strategy: CALC happens after 8 pixels are acknowledged.
+    // We count exactly 8 acknowledgments from the memory model.
+    $display("     Waiting for 8 pixel ACKs to reach CALC state...");
+    
+    repeat (8) @(posedge de_ack); 
+    
+    // CRITICAL TIMING:
+    // When the 8th ACK rises, the DUT is still in PLOT.
+    // It will transition to CALC at the NEXT clock edge.
+    // We wait for that edge so the DUT enters CALC, then immediately reset.
+    @(posedge clk); 
+    
+    $display("     8th Ack received. State should be CALC. Asserting Reset...");
+    rst <= 1;
+    
+    @(posedge clk);
+    rst <= 0;
+    
+    repeat(5) @(posedge clk);
+    if (busy == 0) $display("     [PASS] CALC reset successful.");
+    else           $display("     [FAIL] Stuck busy after CALC reset.");
+
+    $display("---------------------------------------------------\n");
+  endtask
+
   // -----------------------------------------------------------------------------
   // ASSERTIONS
   // -----------------------------------------------------------------------------
@@ -281,49 +390,49 @@ module unit_Testbench ();
 
   // Ack must not be asserted if Req is low (spurious Acks)
   property p_ack_needs_req;
-    @(posedge clk) disable iff (!rst_n) ack |-> req;
+    @(posedge clk) disable iff (rst) ack |-> req;
   endproperty
   assert property(p_ack_needs_req) 
     else $error("Protocol Violation: DUT asserted ACK without REQ.");
 
   // Busy must be asserted when Ack is asserted
   property p_ack_implies_busy;
-    @(posedge clk) disable iff (!rst_n) ack |-> busy;
+    @(posedge clk) disable iff (rst) ack |-> busy;
   endproperty
   assert property(p_ack_implies_busy) 
     else $error("Protocol Violation: BUSY not asserted during ACK.");
 
   // Ack Must Pulse
   property p_ack_pulse;
-    @(posedge clk) disable iff (!rst_n) ack |=> !ack;
+    @(posedge clk) disable iff (rst) ack |=> !ack;
   endproperty
   assert property(p_ack_pulse) else $error("Protocol Violation: ACK high for more than one clock cycle.");
 
   // -- Drawing (Memory) Interface Assertions --
   // Address Stability: Address must not change while waiting for memory ack
   property p_addr_stable;
-    @(posedge clk) disable iff (!rst_n) (de_req && !de_ack) |=> $stable(de_addr);
+    @(posedge clk) disable iff (rst) (de_req && !de_ack) |=> $stable(de_addr);
   endproperty
   assert property(p_addr_stable) 
     else $error("Protocol Violation: de_addr changed while de_req was pending.");
 
   // Data Stability: Data must not change while waiting for memory ack
   property p_data_stable;
-    @(posedge clk) disable iff (!rst_n) (de_req && !de_ack) |=> $stable(de_data);
+    @(posedge clk) disable iff (rst) (de_req && !de_ack) |=> $stable(de_data);
   endproperty
   assert property(p_data_stable) 
     else $error("Protocol Violation: de_data changed while de_req was pending.");
 
   // Byte Enable Stability
   property p_nbyte_stable;
-    @(posedge clk) disable iff (!rst_n) (de_req && !de_ack) |=> $stable(de_nbyte);
+    @(posedge clk) disable iff (rst) (de_req && !de_ack) |=> $stable(de_nbyte);
   endproperty
   assert property(p_nbyte_stable) 
     else $error("Protocol Violation: de_nbyte changed while de_req was pending.");
 
   // Check Busy signal logic
   property p_busy_active;
-    @(posedge clk) disable iff (!rst_n) de_req |-> busy;
+    @(posedge clk) disable iff (rst) de_req |-> busy;
   endproperty
   assert property(p_busy_active) else $error("Protocol Violation: Access requested while NOT busy");
 
@@ -337,7 +446,7 @@ module unit_Testbench ();
   // 4 pixels per word = 76,800 words.
   // Max valid word address = 76,799 (decimal) = 0x12BFF
   property p_valid_address;
-    @(posedge clk) disable iff (!rst_n) de_req |-> (de_addr < 76800);
+    @(posedge clk) disable iff (rst) de_req |-> (de_addr < 76800);
   endproperty
   assert property(p_valid_address) 
     else $error("Functional Error: de_addr out of bounds (screen overflow).");
@@ -346,7 +455,7 @@ module unit_Testbench ();
   // nByte is active low. At least one byte must be enabled (0), 
   // so nByte cannot be 4'b1111 (0xF) during a request.
   property p_valid_strobes;
-    @(posedge clk) disable iff (!rst_n) de_req |-> (de_nbyte != 4'hF);
+    @(posedge clk) disable iff (rst) de_req |-> (de_nbyte != 4'hF);
   endproperty
   assert property(p_valid_strobes) 
     else $error("Functional Error: de_req asserted but no byte lanes enabled.");

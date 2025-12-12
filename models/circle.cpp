@@ -37,7 +37,7 @@ void CircleModule::drawCircle(int x0, int y0, int r,
   int p = r;
 
   while (x <= y)
-  { // The write operations will need serialising in an FSM
+  {
     plot_clipped(x0 + x, y0 + y, colour, fs, outfile);
     plot_clipped(x0 - x, y0 + y, colour, fs, outfile);
     plot_clipped(x0 + x, y0 - y, colour, fs, outfile);

@@ -1,7 +1,7 @@
 /******************************************************************************/
 /*                                                                            */
-/*  Module:   circle                                                          */
-/*  Author:  A Mote                                                        */
+/*  Module:  circle                                                           */
+/*  Author:  A Mote                                                           */
 /*                                                                            */
 /*  Description:                                                              */
 /*  This unit draws a circle from centred at x (R0), y (R1) with radius (R4)  */
@@ -62,9 +62,23 @@ logic signed [19:0] err;         // Error term (needs to be wider for calculatio
 logic [2:0] octant_cnt;
 logic valid_pixel;               // Used to selectively disable de_req when clipping occurs
 
-// Current target pixel coordinates (combinational)
+// Current target pixel coordinates (combinatorial)
 logic signed [17:0] plot_x, plot_y;
+logic [7:0] colour;
 logic [19:0] pixel_addr;
+
+// Debugging Utilities
+/*
+always @(posedge clk) begin
+    if (de_req && de_ack) 
+        $display("HW WRITE: Octant %0d at Addr %h", octant_cnt, de_addr);
+end
+
+always @(posedge clk) begin
+    if (de_req && de_ack) 
+        $display("HW WRITE: x=%0d, y=%0d", x, y);
+end
+*/
 
 // Combinatorial block to determine CURRENT target pixel based on octant
 always_comb begin 
@@ -94,7 +108,7 @@ end
 
 // Output Assignments (combinatorial)
 assign de_addr = pixel_addr[19:2]; // Word address
-assign de_w_data = {4{r6[7:0]}};   // Replicate colour byte 4 times
+assign de_w_data = {4{colour}};    // Replicate colour byte 4 times
 assign de_rnw = 0;                 // This unit only writes
 
 // Byte selection (Active Low)
@@ -129,6 +143,7 @@ always_ff @ (posedge clk) begin
                     cx <= r0[17:0];
                     cy <= r1[17:0];
                     rad <= r4[17:0];
+                    colour <= r6[7:0];
                     ack <= 1;  // Pulse ack
                     busy <= 1; // Raise busy
                 end
@@ -148,8 +163,12 @@ always_ff @ (posedge clk) begin
                 if (de_req) begin
                     if (de_ack) begin
                         de_req <= 0;
-                        if (octant_cnt == 7) state <= CALC;
-                        else octant_cnt <= octant_cnt + 1;
+                        if (octant_cnt == 7) begin
+                            state <= CALC;
+                            octant_cnt <= 0; // Reset here to be safe
+                        end else begin
+                            octant_cnt <= octant_cnt + 1;
+                        end
                     end
                     // Else keep de_req high
                 end
@@ -166,27 +185,36 @@ always_ff @ (posedge clk) begin
             end 
 
             CALC: begin
-                if (x >= y) state <= DONE;
-                else begin
-                    // Mixing blocking and non-blocking assignments is okay in this particular instance.
-                    // Splitting the maths into a seperate combinatorial block would be functionally equivalent
-                    // but more verbose
-                    automatic logic signed [19:0] err_temp; // Temporary variable (wire)
-                    err_temp = err - (x << 1);
-                    
-                    if (err_temp < 0) begin 
-                        y <= y - 1;
-                        err <= err_temp + (y << 1);
-                    end else begin
-                        // y doesn't change
-                        err <= err_temp;
-                    end
+                // 1. Declare temporary variables for the "next" state
+                automatic logic signed [17:0] next_x;
+                automatic logic signed [17:0] next_y;
+                automatic logic signed [19:0] err_temp;
+                
+                // 2. Calculate the updates (same math as before)
+                // Using arithmetic shift or multiplication ensures signed behavior
+                err_temp = err - signed'(x <<< 1);
 
-                    x <= x + 1; // x is always incremented
-                    // Transition back to plotting
-                    octant_cnt <= 0;
+                if (err_temp < 0) begin
+                    next_y = y - 1;
+                    err <= err_temp + signed'(y <<< 1);
+                end else begin
+                    next_y = y;
+                    err <= err_temp;
+                end
+                
+                next_x = x + 1;
+                
+                // 3. Commit updates to registers
+                x <= next_x;
+                y <= next_y;
+                octant_cnt <= 0;
+
+                // 4.Check termination on the *NEXT* values
+                // If the NEW values have crossed, we are done. Do not go back to PLOT.
+                if (next_x <= next_y) begin
                     state <= PLOT;
-                    de_req <= 0; // Not strictly needed, but adds some extra safety
+                end else begin
+                    state <= DONE;
                 end
             end
 
@@ -195,6 +223,8 @@ always_ff @ (posedge clk) begin
                 done <= 1;
                 state <= IDLE;
             end
+
+            default: state <= IDLE;
         endcase
     end
 end
