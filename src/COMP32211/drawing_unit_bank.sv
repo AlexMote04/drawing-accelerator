@@ -205,7 +205,7 @@ drawing_line_plus  u_drawing_line (
     .de_r_data     (mux_bus_data_read[1])
 );
 
-drawing_dummy u_drawing_dummy_2(
+circle u_drawing_circle2(
     .clk           (clk),
     .req           (demux_bus_de_req[2]),
     .reset         (reset_i),

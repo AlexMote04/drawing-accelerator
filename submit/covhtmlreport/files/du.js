@@ -1,2 +1,0 @@
-var g_data = {"data":[{"n":"GLIB.glbl","id":3,"zf":1,"tc":51.98,"s":100.00,"t":3.96},{"n":"Phase_2.circle","id":2,"zf":1,"tc":86.30,"s":100.00,"b":100.00,"fc":100.00,"fs":100.00,"ft":100.00,"t":17.80},{"n":"work.unit_Testbench","id":1,"zf":1,"tc":54.09,"s":76.77,"b":62.74,"fc":28.00,"t":14.07,"a":88.88}]};
-processDuData(g_data);

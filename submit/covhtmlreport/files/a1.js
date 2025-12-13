@@ -1,2 +1,0 @@
-var g_data = {"4":{"pr":"/unit_Testbench","ty":2,"dui":1,"dun":"work.unit_Testbench","asserts":[{"n":["assert__p_valid_strobes",1,460],"h":[0,1]},{"n":["assert__p_valid_address",1,451],"h":[0,1]},{"n":["assert__p_busy_active",1,437],"h":[0,1]},{"n":["assert__p_nbyte_stable",1,430],"h":[0,1]},{"n":["assert__p_data_stable",1,423],"h":[0,1]},{"n":["assert__p_addr_stable",1,416],"h":[0,1]},{"n":["assert__p_ack_pulse",1,409],"h":[0,1]},{"n":["assert__p_ack_implies_busy",1,402],"h":[0,1]},{"n":["assert__p_ack_needs_req",1,395],"h":[1,1]}],"ad":0}}
-processAssertionsData(g_data);

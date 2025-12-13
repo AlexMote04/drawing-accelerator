@@ -21,6 +21,7 @@ localparam TIMEOUT        = 800000;              /* Cycle limit on simulation */
 
 localparam UNIT_CLEAR     = 0;             /* Define what each accelerator is */
 localparam UNIT_LINE      = 1;
+localparam UNIT_CIRCLE    = 2;
 
 // Offsets for Register locations
 localparam R0             = 8'h00;
@@ -150,6 +151,11 @@ initial                                                      /* Test stimulus */
   pre_process_line(150, 100, 170, 110, 8'hF0, 8'h03);
   wait_until_done();                    /* Let processing proceed until done  */
   repeat(20) @ (posedge clk);
+
+                                        /* Drawing a circle                   */
+  //draw_circle(320, 240, 100, 8'hFF);
+  //wait_until_done();                    /* Let processing proceed until done  */
+  //repeat(20) @ (posedge clk);
  
   $stop;                                /* Allow simulation to run to timeout */
 
@@ -426,6 +432,20 @@ end
 endtask
 
 /*----------------------------------------------------------------------------*/
+
+/*----------------------------------------------------------------------------*/
+// This task executes a sequence of write (STRH) operations to trigger a
+// circle drawing operation.
+
+task draw_circle(input [31:0] r0, r1, r4, r6);
+begin
+  bus_write(R0, r0);		// x0
+  bus_write(R1, r1);		// y0
+  bus_write(R4, r4);		// Radius
+  bus_write(R6, r6);		// Colour
+  bus_write(GO, UNIT_LINE);	// Command
+end
+endtask
 
 task fs_write (input [19:0] addr, input [31:0] data);
 
