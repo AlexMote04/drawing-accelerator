@@ -11,6 +11,7 @@ add wave -noupdate -divider "Command Inputs"
 add wave -noupdate /unit_Testbench/req
 add wave -noupdate /unit_Testbench/ack
 add wave -noupdate /unit_Testbench/busy
+add wave -noupdate /unit_Testbench/done
 add wave -noupdate -radix unsigned -group "Registers" /unit_Testbench/r*
 
 # 4. Add Memory Interface (CRITICAL FOR DEBUGGING)

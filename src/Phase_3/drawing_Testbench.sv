@@ -135,27 +135,61 @@ initial                                                      /* Test stimulus */
   repeat(10) @ (posedge clk);          /* Pause to assist visibility in trace */
   bus_write(STATUS_CLR, 32'h0000_1F00); /* Ensure status register is clear    */
   bus_write(STATUS_SET, 1 << 10);       /* Enable 'done' interrupt            */
-  bus_write(R0, 32'h0000_0008);                           /* Write argument 0 */
-  bus_write(GO, UNIT_CLEAR);            /* 'Go' command to Drawing unit #0    */
-
-  repeat (30) @ (posedge clk);          /* Pause to assist vsibility in trace */
-//fs_write (20'h02468, 32'HDEAD_BEEF);  /* Test processor FS write            */
-
-  wait_until_done();                    /* Let processing proceed until done  */
 
   repeat(10) @ (posedge clk);      /*             ... pause ...               */
   bus_write(STATUS_CLR, 1 << 8);   /* Acknowledge the 'done' (if implemented) */
   repeat(10) @ (posedge clk);
 
-                                        /* Drawing a line                     */
-  pre_process_line(150, 100, 170, 110, 8'hF0, 8'h03);
+  /****************************************************************************/
+  /* Concentric circles at the centre                                         */
+  /****************************************************************************/
+  draw_circle(320, 240, 150, 8'hE0);
   wait_until_done();                    /* Let processing proceed until done  */
+
+  repeat(20) @ (posedge clk);
+  bus_write(STATUS_CLR, 1 << 8);
   repeat(20) @ (posedge clk);
 
-                                        /* Drawing a circle                   */
-  //draw_circle(320, 240, 100, 8'hFF);
-  //wait_until_done();                    /* Let processing proceed until done  */
-  //repeat(20) @ (posedge clk);
+  draw_circle(320, 240, 100, 8'h1C);
+  wait_until_done();
+
+  repeat(20) @ (posedge clk);
+  bus_write(STATUS_CLR, 1 << 8);
+
+  draw_circle(320, 240, 50, 8'h3);
+  wait_until_done();
+
+  repeat(20) @ (posedge clk);
+  bus_write(STATUS_CLR, 1 << 8);
+  repeat(20) @ (posedge clk);
+
+  /****************************************************************************/
+  /* Corner Cases (Clipping)                                                  */
+  /****************************************************************************/
+  draw_circle(0, 0, 100, 8'hFF); // Top Left
+  wait_until_done();
+
+  repeat(20) @ (posedge clk);
+  bus_write(STATUS_CLR, 1 << 8);
+  repeat(20) @ (posedge clk);
+
+  draw_circle(639, 0, 100, 8'hFF); // Top Right
+  wait_until_done();
+
+  repeat(20) @ (posedge clk);
+  bus_write(STATUS_CLR, 1 << 8);
+  repeat(20) @ (posedge clk);
+
+  draw_circle(0, 419, 100, 8'hFF); // Bottom Left
+  wait_until_done();
+
+  repeat(20) @ (posedge clk);
+  bus_write(STATUS_CLR, 1 << 8);
+  repeat(20) @ (posedge clk);
+
+  draw_circle(639, 419, 100, 8'hFF); // Bottom Right
+  wait_until_done();
+  repeat(20) @ (posedge clk);
  
   $stop;                                /* Allow simulation to run to timeout */
 
@@ -443,7 +477,7 @@ begin
   bus_write(R1, r1);		// y0
   bus_write(R4, r4);		// Radius
   bus_write(R6, r6);		// Colour
-  bus_write(GO, UNIT_LINE);	// Command
+  bus_write(GO, UNIT_CIRCLE);	// Command
 end
 endtask
 

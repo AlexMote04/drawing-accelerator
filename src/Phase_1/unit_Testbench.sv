@@ -23,6 +23,7 @@ module unit_Testbench ();
   reg          req;
   wire         ack;
   wire         busy;
+  wire         done;
   reg  [31:0]  r0, r1, r2, r3, r4, r5, r6, r7;
   
   // Display/Memory Interface
@@ -72,7 +73,7 @@ module unit_Testbench ();
            .de_req(de_req), .de_ack(de_ack), .de_addr(de_addr), .de_nbyte(de_nbyte), .de_data(de_data)
          );
       6: circle u_dut (
-           .clk(clk), .req(req), .ack(ack), .busy(busy), .reset(rst),
+           .clk(clk), .req(req), .ack(ack), .busy(busy), .done(done), .reset(rst),
            .r0(r0), .r1(r1), .r2(r2), .r3(r3), .r4(r4), .r5(r5), .r6(r6), .r7(r7),
            .de_req(de_req), .de_ack(de_ack), .de_addr(de_addr), .de_nbyte(de_nbyte), .de_w_data(de_data)
          );
