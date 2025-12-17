@@ -11,7 +11,7 @@ Z0 d/home/a93108am/Questa/COMP32211
 vcircle
 2./src/COMP32211/circle.sv
 Z1 DXx6 sv_std 3 std 0 22 9oUSJO;AeEaW`l:M@^WG92
-Z2 !s110 1765907178
+Z2 !s110 1765968768
 !i10b 1
 !s100 _e5Fdb2ei<86DiMU]dD5W1
 I[KX]2=QSzMLf66E?J<P[I2
@@ -27,7 +27,7 @@ Z4 OL;L;2023.4;77
 r1
 !s85 0
 31
-Z5 !s108 1765907177.000000
+Z5 !s108 1765968767.000000
 !s107 ./src/COMP32211/circle.sv|
 !s90 -reportprogress|300|-lint|-cover|bcsxf|./src/COMP32211/circle.sv|
 !s101 -O0
@@ -38,7 +38,7 @@ Z8 tShow_source 1 Hazard 1 DisableOpt 1 Coverage 95 CoverExcludeDefault 1 CoverO
 vdrawing_clear
 2./src/COMP32211/drawing_clear_plus.sv
 R1
-Z9 !s110 1765907176
+Z9 !s110 1765968763
 !i10b 1
 !s100 QYK3dHlGWH;Dhe5;5]lm42
 IcXWGbSk^BM9]75e9I48_F3
@@ -54,7 +54,7 @@ R4
 r1
 !s85 0
 31
-Z11 !s108 1765907176.000000
+!s108 1765968763.000000
 !s107 ./src/COMP32211/video_definitions.sv|./src/COMP32211/drawing_clear_plus.sv|
 !s90 -reportprogress|300|-lint|-cover|bcsxf|./src/COMP32211/drawing_clear_plus.sv|
 !s101 -O0
@@ -63,24 +63,24 @@ R6
 R7
 R8
 vdrawing_control
-Z12 2./src/COMP32211/drawing_control.sv
+Z11 2./src/COMP32211/drawing_control.sv
 R1
-DXx4 work 23 drawing_control_sv_unit 0 22 3Y2;oPcVzh>X1;6M`EAE61
-Z13 !s110 1765907177
+DXx4 work 23 drawing_control_sv_unit 0 22 Y<`f8k][i9]9]ek:a3E?f3
+Z12 !s110 1765968767
 R3
 r1
 !s85 0
 !i10b 1
-!s100 MBHG;JAI]0C=PV^2@TfG50
-Iz_Y>eV?`289dC_XzYOZcU0
+!s100 O4:7KLcmPS?IJ]zdMGTFm2
+IaiOB`kne4f>d2TifX3<7]0
 !s105 drawing_control_sv_unit
 S1
 R0
-R10
+Z13 w1765968747
 Z14 8./src/COMP32211/drawing_control.sv
 Z15 F./src/COMP32211/drawing_control.sv
 !i122 7
-L0 54 223
+L0 54 228
 R4
 31
 R5
@@ -92,19 +92,19 @@ R6
 R7
 R8
 Xdrawing_control_sv_unit
-R12
+R11
 R1
-R13
-V3Y2;oPcVzh>X1;6M`EAE61
+R12
+VY<`f8k][i9]9]ek:a3E?f3
 r1
 !s85 0
 !i10b 1
-!s100 mXea>Zl8;AbM]eS<B?AGS1
-I3Y2;oPcVzh>X1;6M`EAE61
+!s100 KHJY0fN=9APHEj39KolaE2
+IY<`f8k][i9]9]ek:a3E?f3
 !i103 1
 S1
 R0
-R10
+R13
 R14
 R15
 !i122 7
@@ -138,7 +138,7 @@ R4
 r1
 !s85 0
 31
-Z18 !s108 1765907178.000000
+Z18 !s108 1765968768.000000
 !s107 ./src/COMP32211/drawing_demux_8.sv|
 !s90 -reportprogress|300|-lint|-cover|bcsxf|./src/COMP32211/drawing_demux_8.sv|
 !s101 -O0
@@ -149,7 +149,7 @@ R8
 vdrawing_dummy
 2./src/COMP32211/drawing_dummy.sv
 R1
-R13
+!s110 1765968766
 !i10b 1
 !s100 92<:@IT3919=:RnYfE0HO0
 IHMH@gWk7@3kJCM5:S6HTX0
@@ -165,7 +165,7 @@ R4
 r1
 !s85 0
 31
-R5
+Z19 !s108 1765968766.000000
 !s107 ./src/COMP32211/drawing_dummy.sv|
 !s90 -reportprogress|300|-lint|-cover|bcsxf|./src/COMP32211/drawing_dummy.sv|
 !s101 -O0
@@ -176,13 +176,13 @@ R8
 vdrawing_engine
 2./src/COMP32211/drawing_engine.sv
 R1
-!s110 1765907179
+!s110 1765968770
 !i10b 1
 !s100 WOK[CHNZHGUm0k1m1Rgif2
 I12h]0SBZhfNSY0k[]Y89[3
 S1
 R0
-R10
+w1765918406
 8./src/COMP32211/drawing_engine.sv
 F./src/COMP32211/drawing_engine.sv
 !i122 12
@@ -192,7 +192,7 @@ R4
 r1
 !s85 0
 31
-R18
+Z20 !s108 1765968769.000000
 !s107 ./src/COMP32211/drawing_engine.sv|
 !s90 -reportprogress|300|-lint|-cover|bcsxf|./src/COMP32211/drawing_engine.sv|
 !s101 -O0
@@ -203,7 +203,7 @@ R8
 vdrawing_line
 2./src/COMP32211/drawing_line.sv
 R1
-R2
+!s110 1765968769
 !i10b 1
 !s100 lQNT>?_2[z1Pj;HB[;Z7D3
 I7icWN75E8TnT0foSV22HW3
@@ -219,7 +219,7 @@ R4
 r1
 !s85 0
 31
-R18
+R20
 !s107 ./src/COMP32211/drawing_line.sv|
 !s90 -reportprogress|300|-lint|-cover|bcsxf|./src/COMP32211/drawing_line.sv|
 !s101 -O0
@@ -230,7 +230,7 @@ R8
 vdrawing_line_plus
 2./src/COMP32211/drawing_line_plus.sv
 R1
-!s110 1765907175
+!s110 1765968762
 !i10b 1
 !s100 dG:Nc7>o^1coF_Elkb7Wh0
 IaW32B1M[7@:?nTUDi0ehc1
@@ -246,7 +246,7 @@ R4
 r1
 !s85 0
 31
-Z19 !s108 1765907175.000000
+!s108 1765968761.000000
 !s107 ./src/COMP32211/drawing_line_plus.sv|
 !s90 -reportprogress|300|-lint|-cover|bcsxf|./src/COMP32211/drawing_line_plus.sv|
 !s101 -O0
@@ -257,7 +257,7 @@ R8
 vdrawing_mux_8
 2./src/COMP32211/drawing_mux_8.sv
 R1
-R13
+R12
 !i10b 1
 !s100 ?@MeZEjF_dYgFF?dXhMIW1
 I4SzS:OVdN6K9;h;3GbL?01
@@ -273,7 +273,7 @@ R4
 r1
 !s85 0
 31
-R5
+R19
 !s107 ./src/COMP32211/drawing_mux_8.sv|
 !s90 -reportprogress|300|-lint|-cover|bcsxf|./src/COMP32211/drawing_mux_8.sv|
 !s101 -O0
@@ -284,7 +284,7 @@ R8
 vdrawing_unit_bank
 2./src/COMP32211/drawing_unit_bank.sv
 R1
-R9
+!s110 1765968764
 !i10b 1
 !s100 E`hCE8JfjMhIOALc@6]FT0
 Il:^1B`jQCG?zZ>`4`6Y852
@@ -300,7 +300,7 @@ R4
 r1
 !s85 0
 31
-R11
+Z21 !s108 1765968764.000000
 !s107 ./src/COMP32211/drawing_unit_bank.sv|
 !s90 -reportprogress|300|-lint|-cover|bcsxf|./src/COMP32211/drawing_unit_bank.sv|
 !s101 -O0
@@ -311,7 +311,7 @@ R8
 vmock_drawing_vduc
 2./src/COMP32211/mock_drawing_vduc.sv
 R1
-R9
+!s110 1765968765
 !i10b 1
 !s100 VLgjP3P?U;AI[I9IOWNbd1
 IklCR_0^Z>U`@YXJf4O]Kd0
@@ -327,7 +327,7 @@ R4
 r1
 !s85 0
 31
-R11
+R21
 !s107 ./src/COMP32211/mock_drawing_vduc.sv|
 !s90 -reportprogress|300|-lint|-cover|bcsxf|./src/COMP32211/mock_drawing_vduc.sv|
 !s101 -O0
@@ -354,7 +354,7 @@ R4
 r1
 !s85 0
 31
-R19
+!s108 1765968762.000000
 !s107 ./src/COMP32211/mock_framestore.sv|
 !s90 -reportprogress|300|-lint|-cover|bcsxf|./src/COMP32211/mock_framestore.sv|
 !s101 -O0

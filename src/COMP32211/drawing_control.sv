@@ -103,6 +103,8 @@ localparam STATUS_QUEUE_IE    = 11;
 localparam STATUS_BASE_BIT    = 12;
 localparam STATUS_RESET_BIT   = 13;
 
+reg [7:0]   addr;
+
 /* Registers */
 reg  [31:0] arguments [7:0];
 reg  [31:0] command;
@@ -247,9 +249,13 @@ always_comb job_queued = command_requested;    /* Adequate in absence of FIFO */
 
 always_comb job_queue_interrupt = !job_queued;    /* Interrupt if empty queue */
 
+
+// Anthony Fix 
+always @ (posedge clk)                                    /* Address bit hold */
+if (read_i) addr <= address_i[7:0];                   /* Delay for next cycle */
+
 always_comb
-begin : comb_data_bus_output
-if (cs_i && read_i)
+begin : comb_data_bus_output 
   begin                                    /* Reading back from the registers */
   case(address_i[7:0])
     REG_ARGUMENTS + 8'h00 : data_out = arguments[3'd0];
@@ -269,8 +275,7 @@ if (cs_i && read_i)
     REG_DISPLAY_MODE      : data_out = {30'h00000000, v_mode_i};
     default               : data_out = 32'hxxxx_xxxx;
   endcase
-  end
-else data_out = 32'h0000_0000;                              /* Default output */
+  end                             /* Default output */
 end
 
 endmodule

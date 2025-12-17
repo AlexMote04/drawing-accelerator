@@ -30,7 +30,7 @@ KMD
 00000010:             ;     
 00000010:             ;     ; Trigger Clear Unit
 00000010: 00000293    ;     li t0, UNIT_CLEAR
-00000014: 02542023    ;     sw t0, REG_CMD[s0]         ; Write 0 to Command RegisterUNIT_CIRCLE
+00000014: 02542023    ;     sw t0, REG_CMD[s0]         ; Write 0 to Command Register
 00000018:             ;     
 00000018:             ;     ; Wait for Clear to finish
 00000018: 0B4000EF    ;     jal wait_for_done
@@ -112,8 +112,7 @@ KMD
 000000CC:             ; ;              then clears the bit.
 000000CC:             ; ; -----------------------------------------------------------------------------
 000000CC:             ; wait_for_done:
-000000CC:             ;     ;lw   t1, REG_STATUS[s0]    ; Read Status Register (Offset 0x24)
-000000CC: 10000313    ;     li   t1, 0x100
+000000CC: 02442303    ;     lw   t1, REG_STATUS[s0]    ; Read Status Register (Offset 0x24)
 000000D0: 10037313    ;     andi t1, t1, 0x100         ; Mask Bit 8 (0x100 is the 'Done' bit)
 000000D4: FE030CE3    ;     beqz t1, wait_for_done     ; If result is 0, unit is busy -> loop back
 000000D8:             ;     

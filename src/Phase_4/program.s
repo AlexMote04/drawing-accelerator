@@ -28,7 +28,7 @@ main:
     
     ; Trigger Clear Unit
     li t0, UNIT_CLEAR
-    sw t0, REG_CMD[s0]         ; Write 0 to Command RegisterUNIT_CIRCLE
+    sw t0, REG_CMD[s0]         ; Write 0 to Command Register
     
     ; Wait for Clear to finish
     jal wait_for_done
@@ -110,8 +110,7 @@ done:
 ;              then clears the bit.
 ; -----------------------------------------------------------------------------
 wait_for_done:
-    ;lw   t1, REG_STATUS[s0]    ; Read Status Register (Offset 0x24)
-    li   t1, 0x100
+    lw   t1, REG_STATUS[s0]    ; Read Status Register (Offset 0x24)
     andi t1, t1, 0x100         ; Mask Bit 8 (0x100 is the 'Done' bit)
     beqz t1, wait_for_done     ; If result is 0, unit is busy -> loop back
     
