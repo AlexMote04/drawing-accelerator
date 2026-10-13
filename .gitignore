@@ -1,2 +1,31 @@
+# Questa / ModelSim work libraries and outputs
 transcript
+*.wlf
+*.vstf
+modelsim.ini
+/work/
+/GLIB/
+/Phase_*/
+/COMP32211*/
+/unisims/
+*_cmd.dat
+*_gold.dat
+pixels.txt
+vsDump.txt
+fsDump.txt
+
+# Vivado
 Synthesis
+*.jou
+*.log
+.Xil/
+
+# Komodo assembler listings
+*.kmd
+
+# C++ model build
+models/controller
+*.o
+
+# OS
+.DS_Store
